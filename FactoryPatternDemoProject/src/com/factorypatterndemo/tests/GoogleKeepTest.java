@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import android.os.Build;
+import android.util.Log;
 
 import com.android.uiautomator.core.UiDevice;
 import com.android.uiautomator.core.UiObject;
@@ -52,37 +53,44 @@ public class GoogleKeepTest extends UiAutomatorTestCase {
     // Google Account if you're going to try running the test on multiple devices simultaneously.
     // Google Keep syncs notes aggressively.
     public void testGoogleKeepNoteReminderShouldTriggerNotification() throws UiObjectNotFoundException, IOException {
+        final String LOG_TAG = this.getClass().getSimpleName() + "Tests";
         UiDevice device = getUiDevice();
         Calendar cal = Calendar.getInstance();
         String testMessage = Build.DEVICE;
 
         // set system time to 1:00 pm for convenience sake
+        Log.i(LOG_TAG, "Set system time to 1:00pm");
         cal.set(Calendar.HOUR_OF_DAY, 13);
         cal.set(Calendar.MINUTE, 0);
         systemUi.setSystemTime(cal);
 
         // launch app
+        Log.i(LOG_TAG, "Launch Google Keep");
         ShellCommandUtils.launchGoogleKeep();
 
         // click create new note
+        Log.i(LOG_TAG, "Create a new note");
         new UiObject(new UiSelector()
                 .resourceId("com.google.android.keep:id/new_note_button")
                 .description("New note"))
                 .clickAndWaitForNewWindow();
 
         // set note text
+        Log.i(LOG_TAG, "Set note text to " + testMessage);
         new UiObject(new UiSelector()
                 .className(android.widget.EditText.class.getName())
                 .resourceId("com.google.android.keep:id/add_item_text_view"))
                 .setText(testMessage);
 
         // click "Remind me"
+        Log.i(LOG_TAG, "Click remind me");
         new UiObject(new UiSelector()
                 .resourceId("com.google.android.keep:id/reminder_header"))
                 .click();
         device.pressBack();
 
         // set reminder day to today
+        Log.i(LOG_TAG, "Set reminder to today");
         new UiObject(new UiSelector()
                 .resourceId("com.google.android.keep:id/date_spinner"))
                 .clickAndWaitForNewWindow();
@@ -91,6 +99,7 @@ public class GoogleKeepTest extends UiAutomatorTestCase {
                 .click();
 
         // set reminder for custom time
+        Log.i(LOG_TAG, "Set reminder to custom time: 0115p");
         new UiObject(new UiSelector()
                 .resourceId("com.google.android.keep:id/time_spinner"))
                 .clickAndWaitForNewWindow();
@@ -105,22 +114,26 @@ public class GoogleKeepTest extends UiAutomatorTestCase {
         UiTestTextUtils.setStringByKeyEvents("0115p");
 
         // click done
+        Log.i(LOG_TAG, "Click done to set reminder time");
         new UiObject(new UiSelector()
                 .resourceId("com.google.android.keep:id/done_button"))
                 .clickAndWaitForNewWindow();
 
         // even though the app is supposted to automatically save the event when edits are made,
         // press Navigate Up to set the event
+        Log.i(LOG_TAG, "Press up navigation to save the note");
         new UiObject(new UiSelector()
                 .className(android.widget.ImageButton.class.getName())
                 .description("Navigate up"))
                 .clickAndWaitForNewWindow();
 
         // set system time to 15 minutes ahead today
+        Log.i(LOG_TAG, "Set time to 1:15pm");
         cal.set(Calendar.MINUTE, 15);
         systemUi.setSystemTime(cal);
 
         // check notification shade for reminder
+        Log.i(LOG_TAG, "Open notification shade and check for Google Keep note");
         device.openNotification();
         device.waitForIdle(25);
 
