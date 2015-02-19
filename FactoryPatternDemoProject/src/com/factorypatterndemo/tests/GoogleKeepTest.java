@@ -1,5 +1,6 @@
 package com.factorypatterndemo.tests;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -18,6 +19,7 @@ import com.factorypatterndemo.utils.interfaces.SystemUiDateTimeViewHelperInterfa
 
 public class GoogleKeepTest extends UiAutomatorTestCase {
 
+    private static final String LOG_TAG = "";
     SystemUiDateTimeViewHelperInterface systemUi = null;
 
     @Override
@@ -149,7 +151,7 @@ public class GoogleKeepTest extends UiAutomatorTestCase {
 
         assertTrue("Expected notification with title: " + testMessage, notificationExists);
     }
-    
+
     @Override
     public void runTest() throws Throwable {
         try {
