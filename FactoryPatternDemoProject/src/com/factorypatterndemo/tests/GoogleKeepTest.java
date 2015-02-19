@@ -149,4 +149,18 @@ public class GoogleKeepTest extends UiAutomatorTestCase {
 
         assertTrue("Expected notification with title: " + testMessage, notificationExists);
     }
+    
+    @Override
+    public void runTest() throws Throwable {
+        try {
+            super.runTest();
+        } catch (Throwable t) {
+            String path = "/sdcard/testScreenshotsDir/" + getClass().getName();
+            String filePath = path + "." + getName() + ".png";
+
+            Log.i(LOG_TAG, "Saving screenshot in file: " + filePath);
+            getUiDevice().takeScreenshot(new File(filePath));
+            throw t;
+        }
+    }
 }
